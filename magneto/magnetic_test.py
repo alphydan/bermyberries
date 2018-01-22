@@ -1,4 +1,4 @@
-import time
+import datetime, time
 import math
 import csv
 from sense_hat import SenseHat
@@ -6,32 +6,30 @@ from sense_hat import SenseHat
 se = SenseHat()
 
 timetaken = 0
-while timetaken < 5:
-    while True:
+
+# while timetaken < 10:
+with open("magnetic_data.csv","w") as magnetdata:
+    writer = csv.writer(magnetdata)
+    for x in range(1,10):
+
         # gets the raw magnetic data
         raw = se.get_compass_raw()
+
         # gets the components of the magnetic data
         x = raw["x"]
         y = raw["y"]
         z = raw["z"]
         components = "x: {x}, y: {y}, z: {z}".format(**raw)
+
         total = math.sqrt(x*x + y*y + z*z)
+        total = round(total, 3)
+
         print(components, '-->', total)
         time.sleep(0.1)
+        timestamp = datetime.datetime.now()
+        row = [str(x),str(y),str(z),str(total), timestamp]
 
-
-        with open('magnetic_data.csv', 'rb') as f:
-          data = list(csv.reader(f))
-
-        import collections
-        counter = collections.defaultdict(int)
-        for row in data:
-            counter[row[0]] += 1
-
-
-        writer = csv.writer(open("magnetic_data.csv", 'w'))
-        for row in data:
-            if counter[row[0]] >= 4:
-                writer.writerow(row)
+        writer.writerow(row)
         time.sleep(0.1)
-        timetaken = timetaken + 1
+
+

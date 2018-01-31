@@ -8,7 +8,9 @@ se = SenseHat()
 timetaken = 0
 
 # while timetaken < 10:
-with open("magnetic_data.csv","w") as magnetdata:
+def get_magnetic_data():
+
+    with open("magnetic_data.csv","w") as magnetdata:
     writer = csv.writer(magnetdata)
     # 1450 steps with 0.1 waits takes 7min 11s
     for x in range(1,1250):

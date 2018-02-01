@@ -3,7 +3,7 @@ import cv2
 
 cap = cv2.VideoCapture(0)
 ret, frame = cap.read()
-if ret == False:
+if ret == False: 
     print("Frame is empty")
     
 while(True):
@@ -20,3 +20,5 @@ while(True):
 # When everything done, release the capture
 cap.release()
 cv2.destroyAllWindows()
+
+#960 - 45 frames per second 107.5 frames records 1.5 seconds

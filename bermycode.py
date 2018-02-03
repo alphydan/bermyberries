@@ -19,8 +19,8 @@ if brightness > 50:
 # Show the number of lightnings & a lightning animation on the display
 anim.display_animation(1063)
 
+
 savecurrent_mag_field():
-    #
     
     
 

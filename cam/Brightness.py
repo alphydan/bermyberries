@@ -1,3 +1,5 @@
+import numpy as np
+import cv2
 import time
 import picamera
 from sense_hat import AstroPi
@@ -5,6 +7,13 @@ from PIL import Image
 import os
 
 camera = picamera.PiCamera()
+
+myimage=camera.capture("test_image.jpg")
+print(myimage)
+changed_image=cv2.imread(myimage,0)
+print(changed_image)
+image_data = np.asarray(myimage)
+print(image_data)
 
 # Function to check if image taken is mostly white, returns true if mostly white
 def checkWhite(directory):
@@ -45,7 +54,7 @@ def captureImage(camera):
         print('not white')
 
 
-captureImage(camera)
+#captureImage(camera)
 
 
 

@@ -1,13 +1,15 @@
 from picamera import PiCamera
 from time import sleep
+import time
 import datetime as dt
+import csv
 
 x= 4
 y= 7
 
 lightning = True
 
-if lightning = True:
+if lightning == True:
   #save pic
   camera = PiCamera()
   #str_time = dt.datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
@@ -17,7 +19,7 @@ if lightning = True:
   with open("lightning_data.csv","w") as lightningdata:
     writer = csv.writer(lightningdata)
     #save (x, y) of lightning + ts
-    components = "x: {x}, y: {y}".format(**raw)
+    # components = "x: {x}, y: {y}".format(**raw)
 
     time.sleep(2)
     timestamp = dt.datetime.now().strftime("%Y_%m_%d-%H_%M_%S")

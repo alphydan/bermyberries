@@ -5,19 +5,14 @@ import time
 
 sense.show_message(current_lg_n)
 
-def display_animation(n):
+def display_animation(n_li):
     
     o = (255, 173, 65)
     b = (102,215,255)
     e = (0,0,0)
 
-    current_lg_n = str(n)
+    current_lg_n = str(n_li)
     
-    sense.show_message("Hello we are the Berry Berries! Lets log some lighting!")
-    
-    sense.show_message("Oops! its too bright for us to see! We'll be back when we reach the dark side...")
-
-
     sense.show_message(current_lg_n)
 
 
@@ -286,11 +281,13 @@ def display_animation(n):
 
     #the counter number
 
+#messages to astronauts
+    
 def display_greeting():
     
     sense.show_message("Hello we are the Berry Berries! Lets log some lighting!")
 
- def display_too_bright():   
+def display_too_bright():   
     
     sense.show_message("Oops! its too bright for us to see! We'll be back when we reach the dark side...")
 

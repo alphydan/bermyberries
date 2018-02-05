@@ -20,8 +20,8 @@ This file brings together all the elements of our experiment:
 ###########################
 # Parameters & Definitions
 
-# How many seconds does the experiment las?
-x = 10
+# How many seconds does the experiment last?
+x = 100
 
 # Number of lightnings so far
 n_li = 0

@@ -33,6 +33,12 @@ bri_thresh = 40  # number is made up, come back here!!
 camera = PiCamera()
 camera.resolution = (640, 480)
 
+# low lighting mode
+camera.iso = 1200
+camera.exposure_mode = 'night'
+time.sleep(2) # let sensor settle
+                 
+
 
 ############################
 # Hi there astronauts!

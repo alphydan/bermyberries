@@ -285,7 +285,7 @@ def display_animation(n_li):
     
 def display_greeting():
     
-    sense.show_message("Hello we are the Berry Berries! Lets log some lighting!")
+    sense.show_message("Hello we are the Bermy Berries! Lets log some lighting!")
 
 def display_too_bright():   
     
@@ -295,5 +295,5 @@ def display_no_lightning():
     
     sense.show_message("We havent seen any strikes for a while. Don't worry, we're still looking!")
 
-    
+
 

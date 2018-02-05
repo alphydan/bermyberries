@@ -2,41 +2,30 @@ from picamera import PiCamera
 import cv2
 import numpy as np
 
-# camera = PiCamera()
-# str_time = dt.datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
-
-# camera.start_preview(fullscreen=False, window = (100, 20, 640, 480))
-# sleep(2)
-
-# # take a picture with the camera
-# myimage = camera.capture(str_time + '.jpg')
-# # myimage=camera.capture("physics"+ '.jpg')
-# camera.stop_preview()
-# img=cv2.imread("physics.jpg")
-# img=cv2.imread(str_time + '.jpg')
-
-# img[img < 220] = 0
-# cv2.imwrite("editedimg5.jpg",img)
-
 def brightness_score(someimage):
     '''
     Calculates a brightness score for the picture
     '''
     # Open image with Computer Vision library
-    img = cv2.imread(someimage)
+    img = cv2.imread(someimage,0)
     # reset all pixels which were a bit dark to zero
-    img[img < 200] = 0
+    img[img < 180] = 0
     high_contrast_name = someimage.split('.')[0]+'_HC'+'.jpg'
     cv2.imwrite(high_contrast_name, img)
 
     # once all dark pixels are zero,
     # how many bright ones are left?
     # numpy has fast functions to do that
-    nr_nonzero = np.count_nonzero(img)
-    print('nr-non-zero ', nr_nonzero)
+    nr_nonzero = np.count_nonzero(img) #it counts the bright pixels
+    # how_many_pixels = float(480*640) #
+    how_many_pixels = float(1920*931) # 
+    print('bright %', round(nr_nonzero/how_many_pixels*100,1))
     print('Brightness calculator running')
     print('...')
     return nr_nonzero
+
+
+brightness_score('city_4.jpeg')
 
 '''
 similar we are going to do the reverse
@@ -47,4 +36,12 @@ def find_lightning_positions(high_contrast_photo):
     '''
     takes a pre-processed image which has been converted
     to high contrast and tries to find brigh spots inside of it
-    ''' 
+    '''
+    img = cv2.imread(high_contrast_photo)
+    all_bright_spots = np.nonzero(img)[0] # the return is a little funny so I use the [0]
+    for x in all_bright_spots:
+        print(x)
+
+
+    
+find_lightning_positions('city_4_HC.jpg')

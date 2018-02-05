@@ -27,7 +27,8 @@ x = 100
 n_li = 0
 
 # Brightness Threshold
-bri_thresh = 40  # number is made up, come back here!!
+# percent of bright pixels with 180 threshold
+bri_thresh = 30  
 
 # Start camera for the whole experiment
 camera = PiCamera()
@@ -54,26 +55,27 @@ for i in range(x):
     right_now = dt.datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
 
     mag.save_magnet_data(right_now) # <-- WORKS!
-    print('magnetic data saved')
 
     # capture image for current loop
     path_to_img = os.path.join(os.getcwd(),'cam/tmp/')
     image_name = path_to_img + right_now + '-' + str(i) + '.jpg'
     myimage = camera.capture(image_name)
-
+    high_contrast_name = image_name.split('.')[0]+'_HC'+'.jpg'
     # check if it's too bright in daylight
-    briS = ipro.brightness_score(image_name) # <-- DR FEITO working on this
+    bri_s = ipro.brightness_score(image_name)
 
-    if briS > bri_thresh:
-        # delete image
-        pass
-    elif briS <= bri_thresh:
+    if bri_s > bri_thresh:
+        # os.remove(image_name)
+        # os.remove(high_contrast_name)
+        print("that image was too bright")
+        print("IMAGE DELETED")
+    elif bri_s <= bri_thresh:
         # high_contrast = ipro.high_contrast_image(myimage)
         # <- DR FEITO WORKING on this
-        pass
+        print("it's a dark picture! hurray!")
 
         # MILA working on this -->
-        ipro.find_lightning_positions(high_contrast)
+        # ipro.find_lightning_positions(high_contrast)
 
 
         ## MORE STUFF GOES HERE

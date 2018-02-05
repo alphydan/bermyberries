@@ -3,7 +3,7 @@ sense = SenseHat()
 sense.set_rotation(270)
 import time
 
-sense.show_message(current_lg_n)
+# sense.show_message(current_lg_n)
 
 def display_animation(n_li):
     

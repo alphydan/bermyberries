@@ -5,6 +5,7 @@ from picamera import PiCamera
 
 from display import animation as anim
 from cam import imgprocess as ipro
+from magneto import magnetcode as mag
 
 '''
 This file brings together all the elements of our experiment:
@@ -28,8 +29,8 @@ n_li = 0
 bri_thresh = 40  # number is made up, come back here!!
 
 # Start camera for the whole experiment
-camera = PiCamera()
-camera.resolution = (640, 480)
+# camera = PiCamera()
+# camera.resolution = (640, 480)
 
 ############################
 # Hi there astronauts!
@@ -44,7 +45,8 @@ for i in range(x):
     # define timestamp for this loop
     right_now = dt.datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
 
-    # save_magnet_data(right_now) <-- MIA working on this
+    mag.save_magnet_data(right_now) # <-- MIA working on this
+    print('magnetic data saved')
 
     # capture image for current loop
     myimage = camera.capture('/cam/tmp/' + right_now + '_' + i + '.jpg')

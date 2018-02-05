@@ -18,7 +18,7 @@ This file brings together all the elements of our experiment:
 ###########################
 # Parameters & Definitions
 
-# How many seconds does the experiment las?
+# How many seconds does the experiment last?
 x = 1000
 
 # Number of lightnings so far
@@ -47,7 +47,7 @@ for i in range(x):
     # save_magnet_data(right_now) <-- MIA working on this
 
     # capture image for current loop
-    myimage = camera.capture('/cam/tmp/' + right_now + i + '.jpg')
+    myimage = camera.capture('/cam/tmp/' + right_now + '_' + i + '.jpg')
 
     # check if it's too bright in daylight
     # briS = brightness_score(myimage) <-- DR FEITO working on this

@@ -11,9 +11,10 @@ from magneto import magnetcode as mag
 '''
 This file brings together all the elements of our experiment:
 
-(1) Detect lightnings
-(2) Store data about lightnings [(position, time), ...]
-(3) Save magnetic data [(magnetic field, time)]
+(1) Save magnetic data [(magnetic field, time)]
+(2) Detect lightnings
+(3) Store data about lightnings [(position, time), ...]
+(4) Display information for astronauts
 
 '''
 

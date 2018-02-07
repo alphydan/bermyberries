@@ -1,5 +1,5 @@
 #  This is the astropi entry for the Bermyberries
-We are a team of students from Bermuda investigating lighting on the International Space Station.
+We are a team of students from Bermuda investigating lighting on Earth as seen from the International Space Station.
 
 ## Dependencies
 
@@ -9,6 +9,7 @@ You will need to install the following libraries to run this code:
     sudo pip3 install opencv-python -i https://www.piwheels.hostedpi.com/simple
     sudo pip3 install scikit-image -i https://www.piwheels.hostedpi.com/simple 
     sudo pip3 install numpy
+    sudo apt-get install python3-scipy
     
 
 ![ESA lightning](https://github.com/alphydan/bermyberries/blob/master/cam/city_3_HC.jpg)

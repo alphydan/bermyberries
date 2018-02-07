@@ -33,7 +33,7 @@ def brightness_score(someimage):
 # brightness_score('city_4.jpeg')
 
 
-def find_lightning_positions(someimage):
+def find_lightning_positions(someimage, verbose = False):
     '''
     takes an image which is processed and converted into
     to high contrast and tries to find brigh spots inside of it
@@ -45,11 +45,15 @@ def find_lightning_positions(someimage):
     '''
 
     # Open image for processing (option zero makes it black and white)
-    original = cv2.imread(someimage)
+
+
+    original = cv2.imread(someimage)        
     gray_pic = cv2.imread(someimage,0)
-    gray_pic[ gray_pic < 180 ] = 0
-    gray_pic[ gray_pic >= 180 ] = 255
-    
+    # if the pixel is dim, make it zero (black)
+    gray_pic[ gray_pic < 175 ] = 0
+    if the pixel is bright, make it 255 (white)
+    gray_pic[ gray_pic >= 175 ] = 255
+
  
     # blur the spots, so we don't have single pixels or tiny spots
     blurred_pic = cv2.GaussianBlur(gray_pic,(5,5),0)
@@ -59,16 +63,14 @@ def find_lightning_positions(someimage):
     # pixels with values > 100 are made white (255)
     thresh_pic = cv2.threshold(blurred_pic, 100, 255, cv2.THRESH_BINARY)[1]
 
-    # find the contours in the mask, then sort them from left to right
-    # contours = cv2.findContours(threshstretch, cv2.RETR_EXTERNAL,
-                                # cv2.CHAIN_APPROX_NONE) # CHAIN_APPROX_SIMPLE
-
     # contours = cv2.findContours(thresh_pic, cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
     contours = cv2.findContours(thresh_pic, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-    
+
+    list_of_bright_spots = [] # we will store lightnings here
     for cnt in contours[1]:
         bx,by,bw,bh = cv2.boundingRect(cnt)
         print(bx,by,bw,bh)
+        list_of_bright_spots.append([bx+bw/2.0, by+bh/2.0, bw, bh])
         # (cx,cy),radius = cv2.minEnclosingCircle(cnt)
         # cv2.drawContours(original,[cnt],0,(0,255,0),1)   # draw contours in green color
         # cv2.circle(original,(int(cx),int(cy)),int(radius),(0,0,255),2)   # draw circle in red color
@@ -78,32 +80,18 @@ def find_lightning_positions(someimage):
             box_width = 2
             cv2.rectangle(original,(bx-margin,by-margin),
                           (bx+bw+margin,by+bh+margin),box_colour,1) # draw yellow rectangle 
-    cv2.imshow('output',original)
-    cv2.waitKey(0)
+
+    print( list_of_bright_spots)
+    if verbose:
+        cv2.imshow('output',original)
+        cv2.waitKey(0)
     analysis_name = someimage.split('.')[0]+'WITH_BOX'+'.jpg'    
     cv2.imwrite(analysis_name, original)
 
 
-    
-    
-    # diff_img = cv2.absdiff(blur1,blur2)
-    # # diffblur = cv2.blur(diff_img,(2,2))
 
-
-
-
-
-
-
-
-    
-
-    
-
-
-
-brightness_score('city_3.jpeg')
-find_lightning_positions('city_3.jpeg')
+brightness_score('city_4.jpeg')
+find_lightning_positions('city_4.jpeg')
 
 
 ## RESOURCES

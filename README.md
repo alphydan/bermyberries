@@ -12,7 +12,7 @@ You will need to install the following libraries to run this code:
     sudo apt-get install python3-scipy
     
 
-![ESA lightning](https://github.com/alphydan/bermyberries/blob/master/cam/city_3_HC.jpg)
+![ESA lightning](https://github.com/alphydan/bermyberries/blob/master/cam/city_1WITH_BOX.jpg)
 Detection of lightning from a camera on the ISS
 
 > We are interested in the Physics of the atmosphere. We have decided

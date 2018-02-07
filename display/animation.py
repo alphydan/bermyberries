@@ -3,16 +3,15 @@ sense = SenseHat()
 sense.set_rotation(270)
 import time
 
-# sense.show_message(current_lg_n)
 
 def display_animation(n_li):
-    
+
     o = (255, 173, 65)
     b = (102,215,255)
     e = (0,0,0)
 
     current_lg_n = str(n_li)
-    
+
     sense.show_message(current_lg_n)
 
 
@@ -282,18 +281,15 @@ def display_animation(n_li):
     #the counter number
 
 #messages to astronauts
-    
+
 def display_greeting():
-    
+
     sense.show_message("Hello we are the Bermy Berries! Lets log some lighting!")
 
-def display_too_bright():   
-    
-    sense.show_message("Oops! its too bright for us to see! We'll be back when we reach the dark side...")
+def display_too_bright():
 
-def display_no_lightning():   
-    
-    sense.show_message("We havent seen any strikes for a while. Don't worry, we're still looking!")
+    sense.show_message("Too bright! Go2 the dark side!")
 
+def display_no_lightning():
 
-
+    sense.show_message("No strikes :( No worries, still looking!")

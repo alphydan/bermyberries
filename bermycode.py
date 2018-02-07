@@ -29,7 +29,7 @@ n_li = 0
 
 # Brightness Threshold
 # percent of bright pixels with 180 threshold
-bri_thresh = 30  
+bri_thresh = 25
 
 # Start camera for the whole experiment
 camera = PiCamera()
@@ -39,8 +39,10 @@ camera.resolution = (640, 480)
 camera.iso = 1200
 camera.exposure_mode = 'night'
 time.sleep(2) # let sensor settle
-                 
 
+# Counters for non-events
+count_too_bright = 0
+count_no_light = 0
 
 ############################
 # Hi there astronauts!
@@ -49,6 +51,7 @@ time.sleep(2) # let sensor settle
 #############################################
 # Main loop
 # looks at Bx,By,Bz and picture approx. every second
+
 
 
 for i in range(x):
@@ -61,13 +64,17 @@ for i in range(x):
     path_to_img = os.path.join(os.getcwd(),'cam/tmp/')
     image_name = path_to_img + right_now + '-' + str(i) + '.jpg'
     myimage = camera.capture(image_name)
-    high_contrast_name = image_name.split('.')[0]+'_HC'+'.jpg'
     # check if it's too bright in daylight
     bri_s = ipro.brightness_score(image_name)
 
     if bri_s > bri_thresh:
-        # os.remove(image_name)
-        # os.remove(high_contrast_name)
+        # if the image is too bright, delete it.
+        count_too_bright +=1
+        os.remove(image_name)
+        if i%120 == 0:
+            # message to astronauts
+            # every 120 loops (~2 min)
+            anim.display_too_bright()
         print("that image was too bright")
         print("IMAGE DELETED")
     elif bri_s <= bri_thresh:
@@ -75,8 +82,25 @@ for i in range(x):
         # <- DR FEITO WORKING on this
         print("it's a dark picture! hurray!")
 
-        # MILA working on this -->
-        # ipro.find_lightning_positions(high_contrast)
+        # Find positions of bright spots and save
+        # image with their locations as yellow boxes
+        bright_blobs, box_img_name = ipro.find_lightning_positions(image_name)
+        if len(bright_blobs) > 0:
+            # did it find at least one
+            if len(bright_blobs) > 50:
+                # likely too bright and crowded
+                # Delete original and one with boxes
+                os.remove(image_name)
+                os.remove(box_img_name)
+            elif len(bright_blobs) == 0:
+                count_no_light += 1
+                os.remove(image_name)
+                os.remove(box_img_name)
+                if count_no_light%100 ==0:
+                    # a multiple of 100 times
+                    # where we observed no lightning
+                    anim.display_no_lightning()
+
 
 
         ## MORE STUFF GOES HERE
@@ -84,9 +108,3 @@ for i in range(x):
 
         # Show the number of lightnings & a lightning animation on the display
         anim.display_animation(n_li)
-
-
-
-
-
-

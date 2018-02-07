@@ -23,38 +23,33 @@ def brightness_score(someimage):
     # numpy has fast functions to do that
     nr_nonzero = np.count_nonzero(img) #it counts the bright pixels
     # how_many_pixels = float(480*640) #
-    how_many_pixels = float(img.shape[0]*img.shape[1]) # 
-    print('bright %', round(nr_nonzero/how_many_pixels*100,1))
-    print('Brightness calculator running')
-    print('...')
-    return nr_nonzero
-
+    how_many_pixels = float(img.shape[0]*img.shape[1]) #
+    score = round(nr_nonzero/how_many_pixels*100,1)
+    print('brightness score: ', score )
+    return score
 
 # brightness_score('city_4.jpeg')
 
 
 def find_lightning_positions(someimage, verbose = False):
     '''
-    takes an image which is processed and converted into
-    to high contrast and tries to find brigh spots inside of it
+    takes an image, convert it into a blurred,  high contrast
+    version and try to find brigh blobs inside of it.
     `input`: the name of the file
-    `output`: a list with the coordinates of the white spots which
-              have been identified with Computer Vision.
-    Mostly based on: 
+    `output`: a list of lists with the coordinates an size
+    of the white spots which have been identified with Computer Vision.
+    Mostly based on:
     www.pyimagesearch.com/2016/10/31/detecting-multiple-bright-spots-in-an-image-with-python-and-opencv/
     '''
-
     # Open image for processing (option zero makes it black and white)
-
-
-    original = cv2.imread(someimage)        
+    original = cv2.imread(someimage)
     gray_pic = cv2.imread(someimage,0)
     # if the pixel is dim, make it zero (black)
     gray_pic[ gray_pic < 175 ] = 0
     # if the pixel is bright, make it 255 (white)
     gray_pic[ gray_pic >= 175 ] = 255
 
- 
+
     # blur the spots, so we don't have single pixels or tiny spots
     blurred_pic = cv2.GaussianBlur(gray_pic,(5,5),0)
 
@@ -66,30 +61,34 @@ def find_lightning_positions(someimage, verbose = False):
     # contours = cv2.findContours(thresh_pic, cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
     contours = cv2.findContours(thresh_pic, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
 
-    list_of_bright_spots = [] # we will store lightnings here
+    list_of_bright_blobs = [] # we will store lightnings here
     for cnt in contours[1]:
         bx,by,bw,bh = cv2.boundingRect(cnt)
         if verbose:
             print(bx,by,bw,bh)
-        list_of_bright_spots.append([bx+bw/2.0, by+bh/2.0, bw, bh])
-        # (cx,cy),radius = cv2.minEnclosingCircle(cnt)
-        # cv2.drawContours(original,[cnt],0,(0,255,0),1)   # draw contours in green color
-        # cv2.circle(original,(int(cx),int(cy)),int(radius),(0,0,255),2)   # draw circle in red color
+        # saves [center-x, center-y, width, height]
+        # if the blob is not too small
         if bw > 4 and bh > 4:
-            margin = 3
-            box_colour = (0,255,255)
-            box_width = 2
-            cv2.rectangle(original,(bx-margin,by-margin),
-                          (bx+bw+margin,by+bh+margin),box_colour,1) # draw yellow rectangle 
-
+            # if the blob doesnt cover half the screen (too big!)
+            if bw < 330 and bh < 240:
+                list_of_bright_blobs.append([bx+bw/2.0, by+bh/2.0, bw, bh])
+                margin = 3
+                box_colour = (0,255,255) # yellow
+                box_width = 2
+                # add boxes to oringinal image
+                cv2.rectangle(original,(bx-margin,by-margin),
+                          (bx+bw+margin,by+bh+margin),
+                           box_colour,1)
 
     if verbose:
-        print( list_of_bright_spots)
+        print( list_of_bright_blobs)
         cv2.imshow('output',original)
         cv2.waitKey(0)
-    analysis_name = someimage.split('.')[0]+'WITH_BOX'+'.jpg'    
-    cv2.imwrite(analysis_name, original)
-
+    # did it find at least one flash/blob/image?
+    if len(list_of_bright_blobs) > 0:
+        boxes_img_name = someimage.split('.')[0]+'WITH_BOX'+'.jpg'
+        cv2.imwrite(boxes_img_name, original)
+    return (list_of_bright_blobs, boxes_img_name) # a list of lists
 
 
 brightness_score('physics.jpg')

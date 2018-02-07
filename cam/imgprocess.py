@@ -51,7 +51,7 @@ def find_lightning_positions(someimage, verbose = False):
     gray_pic = cv2.imread(someimage,0)
     # if the pixel is dim, make it zero (black)
     gray_pic[ gray_pic < 175 ] = 0
-    if the pixel is bright, make it 255 (white)
+    # if the pixel is bright, make it 255 (white)
     gray_pic[ gray_pic >= 175 ] = 255
 
  
@@ -69,7 +69,8 @@ def find_lightning_positions(someimage, verbose = False):
     list_of_bright_spots = [] # we will store lightnings here
     for cnt in contours[1]:
         bx,by,bw,bh = cv2.boundingRect(cnt)
-        print(bx,by,bw,bh)
+        if verbose:
+            print(bx,by,bw,bh)
         list_of_bright_spots.append([bx+bw/2.0, by+bh/2.0, bw, bh])
         # (cx,cy),radius = cv2.minEnclosingCircle(cnt)
         # cv2.drawContours(original,[cnt],0,(0,255,0),1)   # draw contours in green color
@@ -81,8 +82,9 @@ def find_lightning_positions(someimage, verbose = False):
             cv2.rectangle(original,(bx-margin,by-margin),
                           (bx+bw+margin,by+bh+margin),box_colour,1) # draw yellow rectangle 
 
-    print( list_of_bright_spots)
+
     if verbose:
+        print( list_of_bright_spots)
         cv2.imshow('output',original)
         cv2.waitKey(0)
     analysis_name = someimage.split('.')[0]+'WITH_BOX'+'.jpg'    
@@ -90,8 +92,8 @@ def find_lightning_positions(someimage, verbose = False):
 
 
 
-brightness_score('city_4.jpeg')
-find_lightning_positions('city_4.jpeg')
+brightness_score('physics.jpg')
+find_lightning_positions('physics.jpg', verbose=True)
 
 
 ## RESOURCES

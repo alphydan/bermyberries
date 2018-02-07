@@ -71,9 +71,9 @@ def find_lightning_positions(someimage, verbose = False):
         # saves [center-x, center-y, width, height]
         # if the blob is not too small
         if bw > 4 and bh > 4:
-            # if the blob doesnt cover half the screen (too big!)
-            third_wi = original.shape[1]/3 # a third of the picture's width
-            third_h = original.shape[0]/3  # a third of the picture's height
+            # if the blob doesnt cover 1/5 the screen (too big!)
+            fifth_wi = original.shape[1]/5 # 1/5 of the picture's width
+            fifth_h = original.shape[0]/35 # 1/5 of the picture's height
             if bw < third_wi and bh < third_h:
                 list_of_bright_blobs.append([bx+bw/2.0, by+bh/2.0, bw, bh])
                 margin = 3

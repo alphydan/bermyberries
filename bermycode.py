@@ -1,5 +1,6 @@
 import time
 import os # to name files and directories
+import csv
 
 import datetime as dt
 from picamera import PiCamera
@@ -55,52 +56,46 @@ count_no_light = 0
 
 
 for i in range(x):
-    print('ITERATION ',i, 'lightning so far:', n_li,'\n\n')
     # define timestamp for this loop
     right_now = dt.datetime.now().strftime("%Y_%m_%d-%H_%M_%S_%f")
 
-    mag.save_magnet_data(right_now) # <-- WORKS!
+    # save magnet data and timestamp
+    mag.save_magnet_data(right_now) 
 
     # capture image for current loop
-    path_to_img = os.path.join(os.getcwd(),'cam/tmp/')
+    path_to_img = os.path.join(os.getcwd(),'cam/pics/')
     image_name = path_to_img + right_now + '-' + str(i) + '.jpg'
     myimage = camera.capture(image_name)
-    # check if it's too bright in daylight
+    # check if it's too bright (daylight)
     bri_s = ipro.brightness_score(image_name, debug=False)
 
     if bri_s > bri_thresh:
         # if the image is too bright, delete it.
         count_too_bright +=1
         os.remove(image_name)
-        if i%120 == 0:
+        if i%200 == 0:
             # message to astronauts
-            # every 120 loops (~2 min)
+            # every 200 loops (~3 min)
             anim.display_too_bright()
-        print("that image was too bright")
-        print("IMAGE DELETED")
     elif bri_s <= bri_thresh:
-        # high_contrast = ipro.high_contrast_image(myimage)
-        # <- DR FEITO WORKING on this
-        print("it's a dark picture! hurray!")
-
-
+        # it is a dark image
         # Find positions of bright spots and save
         # image with their locations as yellow boxes
-        bright_blobs, box_img_name = ipro.find_lightning_positions(image_name, i, right_now)
+        bright_blobs, box_img_name = \
+        ipro.find_lightning_positions(image_name, i, right_now)
+        # a small copy of the image has been saved
+        # delete original
         os.remove(image_name)
-
-        
         if len(bright_blobs) > 0:
-            # did it find at least one
-            print('We have blobs')
+            # did it find at least one?
             if len(bright_blobs) > 40:
-                print('we have too many blobs')
+                # too many blobs
                 # likely too bright and crowded
                 # Delete original and one with boxes
                 os.remove(box_img_name)
             elif len(bright_blobs) == 0:
                 count_no_light += 1
-                print('Dark but no blobs')
+                # Dark but no blobs
                 # no need to remove box image as
                 # as it was not created.
                 if count_no_light%100 ==0:
@@ -110,9 +105,11 @@ for i in range(x):
             else: # A GOOD IMAGE AT LAST!! :)
                 # do we have 2 previous ones?
                 # yes -> compare (unfinished)
-                # no -> wait
-                print( 'Nr. of blobs --->', len(bright_blobs) )
-                print('The blobs:', bright_blobs)
+                # no -> wait (unfinished)
+                # Update nr of lightnings (could overestimate)
+                n_li += len(bright_blobs)
+                # Keep astronauts updated now and again:
+                # Show the number of lightnings & a lightning animation on the display
                 if i > 100 and i < 200:
                     anim.display_animation(n_li)
                 if i > 1000 and i < 1050:
@@ -123,12 +120,17 @@ for i in range(x):
                     anim.display_animation(n_li)
                 if i > 5000 and i < 5050:
                     anim.display_animation(n_li)
-                # ipro.image_compare(image_name, bright_blobs)
-                n_li += len(bright_blobs)
-                # Show the number of lightnings & a lightning animation on the display
+
+    # save data mid-way in the experiment
+    if i == 5000:
+        mid_row = [count_too_bright, count_no_light, n_li]
+        with open("lightning_data.csv","a") as lightningdata:
+            writer = csv.writer(lightningdata)
+            writer.writerow(mid_row)
 
 
 
-
-
-
+last_row = [count_too_bright, count_no_light, n_li]
+with open("lightning_data.csv","a") as lightningdata:
+    writer = csv.writer(lightningdata)
+    writer.writerow(last_row)

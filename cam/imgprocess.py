@@ -24,13 +24,11 @@ def brightness_score(someimage, debug=False):
     # how many bright ones are left?
     # numpy has fast functions to do that
     nr_nonzero = np.count_nonzero(img) #it counts the bright pixels
-    # how_many_pixels = float(480*640) #
     how_many_pixels = float(img.shape[0]*img.shape[1]) #
     score = round(nr_nonzero/how_many_pixels*100,3)
-    print('brightness score: {0}% out of {1} x {2} '.format( score, img.shape[0], img.shape[1] ))
+    # print('brightness score: {0}% out of {1} x {2} '.format( score, img.shape[0], img.shape[1] ))
     return score
 
-# brightness_score('city_4.jpeg')
 
 
 def find_lightning_positions(someimage, i, right_now, verbose = False):
@@ -67,20 +65,19 @@ def find_lightning_positions(someimage, i, right_now, verbose = False):
     for cnt in contours[1]:
         bx,by,bw,bh = cv2.boundingRect(cnt)
         if verbose:
-            # print(bx,by,bw,bh)
-            pass
+            print(bx,by,bw,bh)
         # saves [center-x, center-y, width, height]
         # if the blob is not too small
-        if bw > 4 and bh > 4:
+        if bw > 3 and bh > 3:
             # if the blob doesnt cover 1/5 the screen (too big!)
             fifth_wi = original.shape[1]/5 # 1/5 of the picture's width
             fifth_h = original.shape[0]/35 # 1/5 of the picture's height
             if bw < fifth_wi and bh < fifth_h:
                 list_of_bright_blobs.append([bx+bw/2.0, by+bh/2.0, bw, bh])
+                # add boxes to oringinal image
                 margin = 3
                 box_colour = (0,255,255) # yellow
                 box_width = 2
-                # add boxes to oringinal image
                 cv2.rectangle(original,(bx-margin,by-margin),
                           (bx+bw+margin,by+bh+margin),
                            box_colour,1)
@@ -91,30 +88,27 @@ def find_lightning_positions(someimage, i, right_now, verbose = False):
         cv2.imshow('output',original)
         cv2.waitKey(0)
 
-
     # Name of image with boxes drawn on it:
-    boxes_img_name = someimage.split('.')[0]+'WITH_BOX'+'.jpg'
+    boxes_img_name = someimage.split('.')[0]+'_W_BOX'+'.jpg'
 
     # did it find at least one flash/blob/image?
     if len(list_of_bright_blobs) > 0:
+        # save a scaled down version of the image with boxes
         small_original = cv2.resize(original, (0,0), fx=0.8, fy=0.8) 
         cv2.imwrite(boxes_img_name, small_original)
+        # Save positions to lightning data file
         with open("lightning_data.csv","a") as lightningdata:
             writer = csv.writer(lightningdata)
             row = [str(i), list_of_bright_blobs, right_now]
             writer.writerow(row)
 
-        # return a list of lists
+        # return a list of lists with lightning data
         return (list_of_bright_blobs, boxes_img_name) 
 
     # did it not find any bright spots?
     elif len(list_of_bright_blobs) == 0:
         return ([],None)
 
-
-
-# brightness_score('0023.png', debug=True)
-# find_lightning_positions('0023.png', verbose=True)
 
 
 ## RESOURCES

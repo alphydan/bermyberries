@@ -10,6 +10,7 @@ def display_animation(n_li):
     b = (102,215,255)
     e = (0,0,0)
 
+    # convert number to string
     current_lg_n = str(n_li)
 
     sense.show_message(current_lg_n)
@@ -278,9 +279,9 @@ def display_animation(n_li):
     sense.set_pixels(lg1)
     time.sleep(0.2)
 
-    #the counter number
+    # the counter number
 
-#messages to astronauts
+# messages to astronauts
 
 def display_greeting():
 
@@ -288,7 +289,7 @@ def display_greeting():
 
 def display_too_bright():
 
-    sense.show_message("Too bright! Go2 the dark side!")
+    sense.show_message("Too bright! Go 2 the dark side!")
 
 def display_no_lightning():
 

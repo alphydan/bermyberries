@@ -5,7 +5,7 @@ import numpy as np # matrices and large numbers library
 import math
 
 
-def brightness_score(someimage):
+def brightness_score(someimage, debug=False):
     '''
     Calculates a brightness score for the picture
     `input`:image name
@@ -14,9 +14,10 @@ def brightness_score(someimage):
     # Open image with Computer Vision library
     img = cv2.imread(someimage,0)
     # reset all pixels which were a bit dark to zero
-    img[img < 180] = 0
-    high_contrast_name = someimage.split('.')[0]+'_HC'+'.jpg'
-    cv2.imwrite(high_contrast_name, img)
+    img[img < 150] = 0
+    if debug == True:
+        high_contrast_name = someimage.split('.')[0]+'_HC'+'.jpg'
+        cv2.imwrite(high_contrast_name, img)
 
     # once all dark pixels are zero,
     # how many bright ones are left?
@@ -25,7 +26,7 @@ def brightness_score(someimage):
     # how_many_pixels = float(480*640) #
     how_many_pixels = float(img.shape[0]*img.shape[1]) #
     score = round(nr_nonzero/how_many_pixels*100,1)
-    print('brightness score: ', score )
+    print('brightness score: {0}% out of {1} x {2} '.format( score, img.shape[0], img.shape[1] ))
     return score
 
 # brightness_score('city_4.jpeg')
@@ -65,12 +66,15 @@ def find_lightning_positions(someimage, verbose = False):
     for cnt in contours[1]:
         bx,by,bw,bh = cv2.boundingRect(cnt)
         if verbose:
-            print(bx,by,bw,bh)
+            # print(bx,by,bw,bh)
+            pass
         # saves [center-x, center-y, width, height]
         # if the blob is not too small
         if bw > 4 and bh > 4:
             # if the blob doesnt cover half the screen (too big!)
-            if bw < 330 and bh < 240:
+            third_wi = original.shape[1]/3 # a third of the picture's width
+            third_h = original.shape[0]/3  # a third of the picture's height
+            if bw < third_wi and bh < third_h:
                 list_of_bright_blobs.append([bx+bw/2.0, by+bh/2.0, bw, bh])
                 margin = 3
                 box_colour = (0,255,255) # yellow
@@ -81,18 +85,29 @@ def find_lightning_positions(someimage, verbose = False):
                            box_colour,1)
 
     if verbose:
-        print( list_of_bright_blobs)
+        print(len(list_of_bright_blobs), ' BLOBS found')
+        print(list_of_bright_blobs)
         cv2.imshow('output',original)
         cv2.waitKey(0)
+
+
+    # Name of image with boxes drawn on it:
+    boxes_img_name = someimage.split('.')[0]+'WITH_BOX'+'.jpg'
+
     # did it find at least one flash/blob/image?
     if len(list_of_bright_blobs) > 0:
-        boxes_img_name = someimage.split('.')[0]+'WITH_BOX'+'.jpg'
         cv2.imwrite(boxes_img_name, original)
-    return (list_of_bright_blobs, boxes_img_name) # a list of lists
+        # return a list of lists
+        return (list_of_bright_blobs, boxes_img_name) 
+
+    # did it not find any bright spots?
+    elif len(list_of_bright_blobs) == 0:
+        return ([],None)
 
 
-brightness_score('physics.jpg')
-find_lightning_positions('physics.jpg', verbose=True)
+
+# brightness_score('0023.png', debug=True)
+# find_lightning_positions('0023.png', verbose=True)
 
 
 ## RESOURCES

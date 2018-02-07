@@ -21,15 +21,15 @@ This file brings together all the elements of our experiment:
 ###########################
 # Parameters & Definitions
 
-# How many seconds does the experiment last?
-x = 120
+# How many seconds/loops does the experiment last?
+x = 11000
 
 # Number of lightnings so far
 n_li = 0
 
 # Brightness Threshold
 # percentage of pixels above 180 threshold
-bri_thresh = 5 
+bri_thresh = 10
 
 # Start camera for the whole experiment
 camera = PiCamera()
@@ -37,7 +37,7 @@ camera.resolution = (640, 480)
 
 # low lighting mode
 camera.iso = 1200
-# camera.exposure_mode = 'night'
+camera.exposure_mode = 'night'
 time.sleep(2) # let sensor settle
 
 # Counters for non-events
@@ -66,7 +66,7 @@ for i in range(x):
     image_name = path_to_img + right_now + '-' + str(i) + '.jpg'
     myimage = camera.capture(image_name)
     # check if it's too bright in daylight
-    bri_s = ipro.brightness_score(image_name, debug=True)
+    bri_s = ipro.brightness_score(image_name, debug=False)
 
     if bri_s > bri_thresh:
         # if the image is too bright, delete it.
@@ -86,8 +86,8 @@ for i in range(x):
 
         # Find positions of bright spots and save
         # image with their locations as yellow boxes
-        bright_blobs, box_img_name = ipro.find_lightning_positions(image_name)
-
+        bright_blobs, box_img_name = ipro.find_lightning_positions(image_name, i, right_now)
+        os.remove(image_name)
 
         
         if len(bright_blobs) > 0:
@@ -97,11 +97,9 @@ for i in range(x):
                 print('we have too many blobs')
                 # likely too bright and crowded
                 # Delete original and one with boxes
-                os.remove(image_name)
                 os.remove(box_img_name)
             elif len(bright_blobs) == 0:
                 count_no_light += 1
-                os.remove(image_name)
                 print('Dark but no blobs')
                 # no need to remove box image as
                 # as it was not created.
@@ -111,11 +109,22 @@ for i in range(x):
                     anim.display_no_lightning()
             else: # A GOOD IMAGE AT LAST!! :)
                 # do we have 2 previous ones?
-                # yes -> compare
+                # yes -> compare (unfinished)
                 # no -> wait
                 print( 'Nr. of blobs --->', len(bright_blobs) )
                 print('The blobs:', bright_blobs)
-                anim.display_animation(n_li) # <<---- ENABLE LATER
+                if i > 100 and i < 200:
+                    anim.display_animation(n_li)
+                if i > 1000 and i < 1050:
+                    anim.display_animation(n_li)
+                if i > 2000 and i < 2050:
+                    anim.display_animation(n_li)
+                if i > 3000 and i < 3050:
+                    anim.display_animation(n_li)
+                if i > 5000 and i < 5050:
+                    anim.display_animation(n_li)
+                # ipro.image_compare(image_name, bright_blobs)
+                n_li += len(bright_blobs)
                 # Show the number of lightnings & a lightning animation on the display
 
 

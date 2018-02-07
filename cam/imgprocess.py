@@ -1,5 +1,6 @@
 from picamera import PiCamera
 import cv2 # computer vision library
+import csv
 from skimage import measure # scikit-image library
 import numpy as np # matrices and large numbers library
 import math
@@ -14,7 +15,7 @@ def brightness_score(someimage, debug=False):
     # Open image with Computer Vision library
     img = cv2.imread(someimage,0)
     # reset all pixels which were a bit dark to zero
-    img[img < 150] = 0
+    img[img < 100] = 0
     if debug == True:
         high_contrast_name = someimage.split('.')[0]+'_HC'+'.jpg'
         cv2.imwrite(high_contrast_name, img)
@@ -25,14 +26,14 @@ def brightness_score(someimage, debug=False):
     nr_nonzero = np.count_nonzero(img) #it counts the bright pixels
     # how_many_pixels = float(480*640) #
     how_many_pixels = float(img.shape[0]*img.shape[1]) #
-    score = round(nr_nonzero/how_many_pixels*100,1)
+    score = round(nr_nonzero/how_many_pixels*100,3)
     print('brightness score: {0}% out of {1} x {2} '.format( score, img.shape[0], img.shape[1] ))
     return score
 
 # brightness_score('city_4.jpeg')
 
 
-def find_lightning_positions(someimage, verbose = False):
+def find_lightning_positions(someimage, i, right_now, verbose = False):
     '''
     takes an image, convert it into a blurred,  high contrast
     version and try to find brigh blobs inside of it.
@@ -46,9 +47,9 @@ def find_lightning_positions(someimage, verbose = False):
     original = cv2.imread(someimage)
     gray_pic = cv2.imread(someimage,0)
     # if the pixel is dim, make it zero (black)
-    gray_pic[ gray_pic < 175 ] = 0
+    gray_pic[ gray_pic < 100 ] = 0
     # if the pixel is bright, make it 255 (white)
-    gray_pic[ gray_pic >= 175 ] = 255
+    gray_pic[ gray_pic >= 100 ] = 255
 
 
     # blur the spots, so we don't have single pixels or tiny spots
@@ -74,7 +75,7 @@ def find_lightning_positions(someimage, verbose = False):
             # if the blob doesnt cover 1/5 the screen (too big!)
             fifth_wi = original.shape[1]/5 # 1/5 of the picture's width
             fifth_h = original.shape[0]/35 # 1/5 of the picture's height
-            if bw < third_wi and bh < third_h:
+            if bw < fifth_wi and bh < fifth_h:
                 list_of_bright_blobs.append([bx+bw/2.0, by+bh/2.0, bw, bh])
                 margin = 3
                 box_colour = (0,255,255) # yellow
@@ -96,7 +97,13 @@ def find_lightning_positions(someimage, verbose = False):
 
     # did it find at least one flash/blob/image?
     if len(list_of_bright_blobs) > 0:
-        cv2.imwrite(boxes_img_name, original)
+        small_original = cv2.resize(original, (0,0), fx=0.8, fy=0.8) 
+        cv2.imwrite(boxes_img_name, small_original)
+        with open("lightning_data.csv","a") as lightningdata:
+            writer = csv.writer(lightningdata)
+            row = [str(i), list_of_bright_blobs, right_now]
+            writer.writerow(row)
+
         # return a list of lists
         return (list_of_bright_blobs, boxes_img_name) 
 

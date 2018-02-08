@@ -1,19 +1,5 @@
 #  This is the astropi entry for the Bermyberries
-We are a team of students from Bermuda investigating lighting on Earth as seen from the International Space Station.
-
-## Dependencies
-
-You will need to install the following libraries to run this code:
-
-
-    sudo pip3 install opencv-python -i https://www.piwheels.hostedpi.com/simple
-    sudo pip3 install scikit-image -i https://www.piwheels.hostedpi.com/simple 
-    sudo pip3 install numpy
-    sudo apt-get install python3-scipy
-    
-
-![ESA lightning](https://github.com/alphydan/bermyberries/blob/master/cam/city_1WITH_BOX.jpg)
-Detection of lightning from a camera on the ISS
+We are a team of students from Bermuda investigating lightning on Earth as seen from the International Space Station.
 
 > We are interested in the Physics of the atmosphere. We have decided
 to investigate two fascinating phenomena: Lightning and the
@@ -33,4 +19,27 @@ the numbers by 10 or 100. In addition, we saw in previous astropi
 pictures that the field of view of the camera is sometimes obstructed,
 so the area may be smaller too. Overall, we hope to record the
 location and effect of hundreds of lightning strikes.
+
+## Dependencies
+
+You will need to install the following libraries to run this code:
+
+
+    sudo pip3 install opencv-python -i https://www.piwheels.hostedpi.com/simple
+    sudo pip3 install scikit-image -i https://www.piwheels.hostedpi.com/simple 
+    sudo pip3 install numpy
+    sudo apt-get install python3-scipy
+    
+
+![ESA lightning](https://github.com/alphydan/bermyberries/blob/master/cam/city_1WITH_BOX.jpg)
+Detection of lightning from a camera on the ISS (Our image processing code can identify bright blobs in the atmosphere)
+
+## Running this code
+
+To run the experiment, run:
+
+    python3 bermycode.py
+
+
+
 
